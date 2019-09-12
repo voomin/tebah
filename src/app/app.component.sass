@@ -1,0 +1,122 @@
+/* Basic Tag
+  
+@import url(https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css)
+@import url(https://cdn.rawgit.com/openhiun/hangul/14c0f6faa2941116bb53001d6a7dcd5e82300c3f/nanumbarungothic.css)
+
+*
+  font-family: 'Nanum Barun Gothic', sans-serif
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none)
+  .card
+    display: block
+
+/* IE6,7,9,10
+@media screen and (min-width: 640px), screen\9 
+  .card
+    display: block
+
+/* IE6,7
+@media screen\9 
+  .card
+    display: block
+
+/* IE8
+@media \0screen
+  .card
+    display: block
+
+/* IE6,7,8
+@media \0screen\,screen\9 
+  .card
+    display: block
+
+/* IE9,10
+@media screen and (min-width: 0\0)
+  .card
+    display: block
+
+.zoom
+  -webkit-transition: all 0.35s ease-in-out
+  -moz-transition: all 0.35s ease-in-out
+  transition: all 0.35s ease-in-out
+  cursor: -webkit-zoom-in
+  cursor: -moz-zoom-in
+  cursor: zoom-in
+  &:hover, &:active, &:focus
+    -ms-transform: scale(2.5)
+    -moz-transform: scale(2.5)
+    -webkit-transform: scale(2.5)
+    -o-transform: scale(2.5)
+    transform: scale(2.5)
+    position: relative
+    z-index: 100
+
+.footer-dark
+  padding: 50px 0
+  color: #f0f9ff
+  h3
+    margin-top: 0
+    margin-bottom: 12px
+    font-weight: bold
+    font-size: 16px
+  ul
+    padding: 0
+    list-style: none
+    line-height: 1.6
+    font-size: 14px
+    margin-bottom: 0
+    a
+      color: inherit
+      text-decoration: none
+      opacity: 0.6
+      &:hover
+        opacity: 0.8
+  .item
+    &.text
+      margin-bottom: 36px
+      p
+        opacity: 0.6
+        margin-bottom: 0
+    &.social
+      text-align: center
+      > a
+        font-size: 20px
+        width: 36px
+        height: 36px
+        line-height: 36px
+        display: inline-block
+        text-align: center
+        border-radius: 50%
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4)
+        margin: 0 8px
+        color: #fff
+        opacity: 0.75
+        &:hover
+          opacity: 0.9
+  .copyright
+    text-align: center
+    padding-top: 24px
+    opacity: 0.3
+    font-size: 13px
+    margin-bottom: 0
+
+@media (max-width: 767px)
+  .footer-dark .item:not(.social)
+    text-align: center
+    padding-bottom: 20px
+
+@media (max-width: 767px)
+  .footer-dark .item.text
+    margin-bottom: 0
+
+@media (max-width: 991px)
+  .footer-dark .item.social
+    text-align: center
+    margin-top: 20px
+
+.bg-cover
+  background-size: cover
+  background-position: center center
+
+.h-261
+  height: 261px

@@ -1,0 +1,61 @@
+
+<div class="container">
+  <!-- Page Heading/Breadcrumbs-->
+  <h4 class="mt-4 mb-3">고객과 우리가 하나 되는 곳 ​<small> </small></h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">고객지원</li>
+    <li class="breadcrumb-item active">자주묻는질문</li>
+  </ol>
+  <div
+    class="mb-4"
+    id="accordion"
+    role="tablist"
+    aria-multiselectable="true"
+  >
+    <ng-container *ngFor="let faq of faqs; index as i; first as f">
+      <div class="card">
+        <div class="card-header" id="heading{{i}}" role="tab">
+          <p class="mb-0">
+            <a
+              class="font-weight-bold"
+              data-toggle="collapse"
+              data-parent="#accordion"
+              [attr.href]="'#collapse'+i"
+              aria-expanded="true"
+              [attr.aria-controls]="'collapse'+i"
+            >
+              {{faq.q}}</a
+            >
+          </p>
+        </div>
+
+        <div *ngIf="f; then firstFaq; else elseFaq"></div>
+
+        <ng-template #firstFaq>
+          <div
+            class="collapse show"
+            id="collapse{{i}}"
+            role="tabpanel"
+            [attr.aria-labelledby]="'heading'+i"
+          >
+            <div class="card-body" innerHTML='{{faq.a}}'></div>
+          </div>
+        </ng-template>
+        <ng-template #elseFaq>
+          <div
+            class="collapse"
+            id="collapse{{i}}"
+            role="tabpanel"
+            [attr.aria-labelledby]="'heading'+i"
+          >
+            <div class="card-body" innerHTML='{{faq.a}}'></div>
+          </div>
+        </ng-template>
+        
+        
+      </div>
+    </ng-container>
+
+  </div>
+</div>
+<!-- /.container-->

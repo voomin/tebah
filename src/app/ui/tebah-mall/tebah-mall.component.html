@@ -1,0 +1,107 @@
+<div class="container">
+  <h4 class="mt-4 mb-3">테바몰</h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      현재 테바몰은 포인트를 통해서만 구매가 가능합니다.
+      <!-- <a routerLink="/mall">테바몰</a> -->
+    </li>
+  </ol>
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="list-group mb-3">
+        <a class="list-group-item list-group-item-action" routerLink="point"
+          >적립금몰</a
+        >
+      </div>
+    </div>
+    <div class="col-lg-9">
+      <img
+        src="assets/img/barotok-brandstory.jpg"
+        class="img-fluid rounded mb-4"
+        alt=""
+      />
+      <hr />
+      <h5 class="text-dark font-weight-bold">
+        바로톡(BAROTOK) 브랜드 스토리
+      </h5>
+      <hr />
+      <p class="text-dark">
+        음식물 쓰레기에 손을 대지 않고 처리할 방법은 없을까?
+      </p>
+      <p class="text-secondary">
+        누구나 겪는 일상 속 불편함에 착안해 누구도 만들지 못한 친환경 거름망
+        <span class="text-success font-weight-bold">‘바로톡’</span>을
+        만들었습니다. 집안일을 하면서 가장 골치 아픈 일이 싱크대 거름망
+        청소였습니다. 특히 여름에는 금새 스테인리스 거름망 틈새에 찌꺼기가 썩어
+        냄새도 심하고 여간 성가신 일이 아니었습니다. 누구나 이런 불편함을
+        겪어보셨을 것입니다.
+      </p>
+      <p class="text-dark">
+        음식물과 함께 거름망을 통째로 ‘바로 톡’하고 버릴 수 있는 방법은 없을까?
+      </p>
+      <p class="text-secondary">
+        (주)테바는 소비자의 불편함을 해소하면서 미래 세대에 편리하고 안전함까지
+        갖춘 제품을 생각하게 되었습니다. 그래서 바로톡은 첫 번째 음식물을
+        깔끔하게 버릴 수 있도록 하는 데에 목적을 두고 소비자의 가감없는 의견을
+        반영하여 제품의 완성도를 높였고, 두 번째 환경을 생각하여 제품을
+        제작하였습니다. 분해되지 않고 계속 쌓여 우리 아이들에게 가는
+        폴리비닐이나 나일론 거름망과 달리 바로톡은 친환경 소재로 만들었습니다.
+        당사가
+        <span class="text-success font-weight-bold">국내 최초 개발</span>하여
+        바로톡에 사용중인 필름은 180일 후 음식물과 같이 거름망 자체가 생분해
+        되어 환경에 무해합니다. 또한 최근에는 소비자의 니즈를 파악하여 기존의
+        제품에 초파리 등이 모이지 않도록 친환경 코팅제를 입힌
+        <span class="text-success font-weight-bold">‘바로톡 에프’ </span>를
+        제조하였습니다.
+      </p>
+      <ng-container *ngIf="packageGuides | async as pgs; else loading">
+        <div class="card-columns">
+          <div class="card" *ngFor="let pg of pgs">
+            <img
+              class="card-img-top"
+              src="{{ pg.thumb_imgUrl }}"
+              alt="Card image cap"
+            />
+            <div class="card-body">
+              <h5 class="text-right">{{ pg.min_price | number }}원</h5>
+              <p class="card-title font-weight-bold">{{ pg.title }}</p>
+              <p class="card-text">{{ pg.description }}</p>
+              <a class="" routerLink="{{ pg.moreLink }}">자세히</a>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-outline-secondary" (click)="onBuyinPG(pg)">구매하기</button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="packages | async as pks">
+          <hr *ngIf="pks.length != 0">
+          <div class="card-columns">
+            <div class="card" *ngFor="let pk of pks">
+              <img
+                class="card-img-top"
+                src="{{ pk.thumb_imgUrl }}"
+                alt="Card image cap"
+              />
+              <div class="card-body">
+                <h5 class="text-right">{{ pk.price | number }}원</h5>
+                <p class="card-title font-weight-bold">{{ pk.title }}</p>
+                <p class="card-text">{{ pk.description }}</p>
+                <a class="" routerLink="{{ pk.moreLink }}">자세히</a>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-outline-secondary" (click)="onBuyinPK(pk)">구매하기</button>
+              </div>
+            </div>
+          </div>
+      </ng-container>
+      <ng-template #loading>
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <!-- ROW END -->
+</div>
+

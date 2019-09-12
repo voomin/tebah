@@ -1,0 +1,55 @@
+<div class="container">
+    <!-- Page Heading/Breadcrumbs-->
+    <h4 class="mt-4 mb-3">고객과 우리가 하나 되는 곳 ​<small> </small></h4>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active">고객지원</li>
+      <li class="breadcrumb-item active">이벤트</li>
+    </ol>
+    <!-- Blog Post-->
+    <div class='row mb-4'>
+      <div class='col'>
+        <a routerLink='/review/write' class='btn btn-primary' role='button'>후기 작성하기</a>
+      </div>
+    </div>
+    <div class="row">
+        <ng-container *ngFor="let review of reviews | async review">
+          <div class="col-lg-4 col-sm-6 mb-4">
+            <div class="card">
+                <img class="card-img-top h-261" src="{{review.imgSrc}}" alt="Card image cap">
+                <div class="card-body">
+                  <h5 class="card-title">{{review.title}}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{review.timestamp | dateAgo}}</h6>
+                  <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                  <button class="btn btn-outline-info" data-toggle="modal" data-target="#reviewInfoModal" (click)="onReview(review)">보기</button>
+                </div>
+              </div>
+            </div>
+        </ng-container>
+    </div>
+  </div><!-- /.container-->
+
+
+  
+<!-- [ Modal reviewInfoModal START ] -->
+<div class="modal" id="reviewInfoModal" *ngIf="selectReview as r">
+    <div class="modal-dialog">
+      <div class="modal-content" >
+        <div class="modal-header">
+          <h4 class="modal-title">{{r.title}}</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <img src="{{r.imgSrc}}" class="img-fluid img-thumbnail mb-3" alt="">
+          <p>작성자 : {{r.display_name}}</p>
+          <p>작성일 : {{r.timestamp | date:'yyyy-MM-dd'}}</p>
+          <p style="white-space: pre-line">{{r.content}}</p>
+          <button *ngIf="auth.user$ | async as user" class="btn btn-outline-secondary" data-dismiss="modal" (click)="onReviewDelete(r.id)">삭제</button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <!-- [ Modal reviewInfoModal END ] -->

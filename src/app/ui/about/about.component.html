@@ -1,0 +1,49 @@
+<!-- <a routerLink="/event/RIc44e0PnyaMWIGuZABq">
+  <img class='w-100' src="assets/img/about-baner.jpg" alt="">
+</a> -->
+
+<div class="container">
+  <h4 class="mt-4 mb-3">우리는 누구인가?<small> </small></h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">회사소개</li>
+    <li class="breadcrumb-item active">우리의 이야기</li>
+  </ol>
+  <br/>
+  <div class="row">
+    <div class="col-lg-6"><img class="img-fluid rounded mb-4" src="assets/img/member_Tebah.jpg" alt="" /></div>
+    <div class="col-lg-6">
+      <h4>(주)테바</h4>
+      <p>테바는 히브리어로 방주를 뜻합니다.<br />노아의 방주를 아시나요? (주)테바는 함께 걸어가는 고객과 구성원들과 같이 타고 갈 수 있는 배를 만들고 싶었고, 같이 노를 저으며 가고 싶었습니다. <br />그러한 마음에서 테바가 탄생하였습니다.<br />테바는 나의 이야기가 아닌 고객과 우리의 이야기를 만들어 가고 있습니다.</p>
+      <p>테바와 함께 노를 저으며 가시지 않겠습니까?</p>
+    </div>
+  </div>
+  <br />
+  <br />
+  <h4>우리가 함께하는 사람들</h4>
+  <div class="row">
+      <div *ngFor="let member of members" class="col-lg-4 mb-4">
+        <div class="card h-100 text-center justify-content-between">
+          <img class="card-img-top" src="{{member.imageUrl}}" alt="" />
+          <div class="card-body" style="margin-bottom:49px;">
+            <h4 class="card-title">{{member.name}}</h4>
+            <h6 class="card-subtitle mb-2 text-muted">{{member.position}}</h6>
+            <p class="card-text text-justify">
+              {{member.introduction}}
+            </p>
+          </div>
+          <div class="card-footer w-100" style="position:absolute; bottom:0;">
+            <a href="mailto:{{member.mail}}">{{member.mail}}</a></div>
+        </div>
+      </div>
+  </div>
+  <br />
+  <h4>우리의 모습</h4>
+  <div class="row">
+    <div class="col-lg-2 col-sm-4 mb-4"><img class="img-fluid" src="assets/img/about01.jpg" alt="" /></div>
+    <div class="col-lg-2 col-sm-4 mb-4"><img class="img-fluid" src="assets/img/about02.jpg" alt="" /></div>
+    <div class="col-lg-2 col-sm-4 mb-4"><img class="img-fluid" src="assets/img/about03.jpg" alt="" /></div>
+    <div class="col-lg-2 col-sm-4 mb-4"><img class="img-fluid" src="assets/img/about04.jpg" alt="" /></div>
+    <div class="col-lg-2 col-sm-4 mb-4"><img class="img-fluid" src="assets/img/about05.jpg" alt="" /></div>
+    <div class="col-lg-2 col-sm-4 mb-4"><img class="img-fluid" src="assets/img/about06.jpg" alt="" /></div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="container">
+  <h4 class="mt-4 mb-3">우리는 누구인가?<small> </small></h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">회사소개</li>
+    <li class="breadcrumb-item active">우리의 가치</li>
+  </ol>
+  <img class="img-fluid rounded mb-1" src="assets/img/value-03.jpg" alt="" />
+  <img class="img-fluid rounded mb-3" src="assets/img/value-04.jpg" alt="" />
+  <!-- Marketing Icons Section-->
+  <h6 class="lead text-center bg-secondary p-1 rounded text-light">
+    <small>“우리의 모든 경영활동은 인류에게 편리하고 새로운 경험을 제공하기 위함이다.“ </small>
+  </h6>
+  <br />
+  <ng-container *ngFor="let certificate of certificates">
+      <h4>{{certificate.title}}</h4>
+      <div class="row">
+        <div *ngFor="let item of certificate.list" class="col-lg-3 col-md-4 col-sm-6 portfolio-item">
+          <div class="card"><a><img class="card-img-top" src="{{item.src}}" alt="" /></a>
+            <div class="card-footer text-muted">{{item.title}}</div>
+          </div>
+        </div>
+      </div>
+      <br>
+  </ng-container>
+</div>

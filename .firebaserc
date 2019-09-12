@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "barotok-35f92"
+  },
+  "targets": {
+    "barotok-35f92": {
+      "hosting": {
+        "test": [
+          "tebah-test"
+        ],
+        "main": [
+          "barotok-35f92"
+        ]
+      }
+    }
+  }
+}

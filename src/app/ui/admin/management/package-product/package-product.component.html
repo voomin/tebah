@@ -1,0 +1,751 @@
+<ng-container *ngIf="auth.user$ | async as user; else notLogin">
+  <ng-container *ngIf="user.admin; else guest">
+    <div class="container-fluid">
+      <div class="row">
+        <app-sidebar-admin></app-sidebar-admin>
+        <div class="col col-lg-9 m-3">
+          <!-- [ admin content ng container START ] -->
+          <div class="container text-center">
+            <div class="row justify-content-center">
+              <div class="col-md-7">
+                <h1 class="font-weight-light mt-4">판매상품 관리</h1>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <button
+            class="btn btn-secondary mr-3 mb-3"
+            data-toggle="modal"
+            data-target="#productAdd"
+            style="cursor: pointer;"
+          >
+            판매상품 추가
+          </button>
+          <button
+            class="btn btn-warning mr-3 mb-3"
+            data-toggle="modal"
+            data-target="#packageGuideAdd"
+            style="cursor: pointer;"
+          >
+            판매상품 가이드 추가
+          </button>
+
+          <table class="table table-hover">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">유형</th>
+                <th scope="col">판매채널</th>
+                <th scope="col">상품명</th>
+                <th scope="col">생성일</th>
+                <th scope="col">보여주기</th>
+                <th scope="col">노출순서</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let pg of packageGuides | async; index as i">
+                <tr
+                  data-toggle="modal"
+                  data-target="#packageGuideInfo"
+                  (click)="onPackageGuide(pg)"
+                >
+                  <td>판매상품 가이드</td>
+                  <td>테바몰</td>
+                  <td>{{ pg.title }}</td>
+                  <td>{{ pg.create_timestamp | date: 'yyyy.MM.dd'}}</td>
+                  <td>{{ pg.show }}</td>
+                  <td>{{ i + 1 }}</td>
+                </tr>
+              </ng-container>
+              <ng-container *ngFor="let pk of packages | async as packages; index as i">
+                <tr
+                  data-toggle="modal"
+                  data-target="#productInfo"
+                  (click)="onPackage(pk)"
+                >
+                  <td>판매상품</td>
+                  <td>{{ pk.salesChannel_title }}</td>
+                  <td>{{ pk.title }}</td>
+                  <td>{{ pk.create_timestamp | date: "yyyy.MM.dd" }}</td>
+                  <td>{{ pk.show }}</td>
+                  <td>{{ i + 1 }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+
+
+          <!-- [ MODAL productAdd START ] -->
+          <div class="modal" id="productAdd">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">판매상품 추가</h4>
+                  <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                  </button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <p class="small text-secondary font-italic">
+                    판매상품이란? 고유상품들이 포함된 하나의 패키지 상품
+                  </p>
+
+                  <p>판매채널 :</p>
+                  <div
+                    class="btn-group btn-group-toggle mb-3"
+                    data-toggle="buttons"
+                    *ngFor="let ch of salesChannels | async"
+                  >
+                    <label
+                      class="btn btn-light"
+                      (click)="onCheckedChannel(ch.salesChannel_id, ch.title)"
+                    >
+                      <input type="radio" name="jb-radio" id="jb-radio-1" />
+                      {{ ch.title }}
+                    </label>
+                  </div>
+                  <hr />
+                  <p>패키지 구성품당 갯수 입력:</p>
+                  <ng-container *ngFor="let single of singles |async as singles; let i = index">
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text bg-light text-secondary"
+                          >{{ single.title }}
+                        </span>
+                      </div>
+                      <input
+                        type="number"
+                        class="form-control"
+                        [(ngModel)]="inputSingles[single.single_id]"
+                      />
+                    </div>
+                  </ng-container>
+                  <hr />
+                  <p>패키지 정보 :</p>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">패키지 상품명</span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="inputTitle"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">패키지 가격</span>
+                    </div>
+                    <input
+                      type="number"
+                      [(ngModel)]="inputPrice"
+                      class="form-control text-right"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">￦</span>
+                    </div>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">미리보기 이미지 URL </span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="inputThumb_imgUrl"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">자세히 링크 URL</span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="inputMoreLink"
+                      class="form-control"
+                    />
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">패키지상품 설명</span>
+                    </div>
+                    <textarea
+                      class="form-control"
+                      [(ngModel)]="inputDescription"
+                      style="min-height: 38px;"
+                      aria-label="With textarea"
+                      autosize
+                    ></textarea>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="inputGroupSelect01"
+                        >보여주기</label
+                      >
+                    </div>
+                    <select
+                      class="custom-select"
+                      id="inputGroupSelect01"
+                      [(ngModel)]="inputShow"
+                    >
+                      <option [ngValue]="true">true</option>
+                      <option [ngValue]="false">false</option>
+                    </select>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="inputGroupSelect02"
+                        >포인트 구매 가능여부</label
+                      >
+                    </div>
+                    <select
+                      class="custom-select"
+                      id="inputGroupSelect02"
+                      [(ngModel)]="inputPointAvailability"
+                    >
+                      <option [ngValue]="true">true</option>
+                      <option [ngValue]="false">false</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-dismiss="modal"
+                    (click)="onProductAdd()"
+                  >
+                    추가
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- [ MODAL productAdd END ] -->
+
+          <!-- [ MODAL packageGuideAdd START] -->
+          <div class="modal" id="packageGuideAdd">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">판매상품 가이드 추가</h4>
+                  <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                  </button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <p class="small text-secondary font-italic">
+                    판매상품가이드란? 테바몰에 패키지 상품들을 옵션형태로 골라서
+                    하나의 패키지를 선택하게 도와주는 형태
+                  </p>
+
+                  <p>가이드할 패키지 :</p>
+                  <div
+                    class="btn-group btn-group-toggle mb-3 mr-3"
+                    data-toggle="button"
+                    aria-pressed="false"
+                    autocomplete="off"
+                    *ngFor="let p of packages | async as packages"
+                  >
+                    <label
+                      class="btn btn-outline-secondary"
+                      (click)="selectPackageInPG(p)"
+                    >
+                      <input type="radio" name="jb-radio" id="jb-radio-1" />
+                      {{ p.title }}
+                    </label>
+                  </div>
+                  <hr />
+                  <p>패키지 가이드 정보 :</p>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">제목</span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="inputPGTitle"
+                      class="form-control"
+                    />
+                  </div>
+                  <!-- <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">최소 가격</span>
+                    </div>
+                    <input
+                      type="number"
+                      [(ngModel)]="inputPGMinPrice"
+                      class="form-control text-right"
+                      readonly
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">￦</span>
+                    </div>
+                  </div><div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">최대 가격</span>
+                      </div>
+                      <input
+                        type="number"
+                        [(ngModel)]="inputPGMaxPrice"
+                        class="form-control text-right"
+                        readonly
+                      />
+                      <div class="input-group-append">
+                        <span class="input-group-text">￦</span>
+                      </div>
+                    </div> -->
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">미리보기 이미지 URL </span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="inputPGThumb_imgUrl"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">자세히 링크 URL</span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="inputPGMoreLink"
+                      class="form-control"
+                    />
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">설명</span>
+                    </div>
+                    <textarea
+                      class="form-control"
+                      [(ngModel)]="inputPGDescription"
+                      style="min-height: 38px;"
+                      aria-label="With textarea"
+                      autosize
+                    ></textarea>
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="inputGroupSelect03"
+                        >보여주기</label
+                      >
+                    </div>
+                    <select
+                      class="custom-select"
+                      id="inputGroupSelect03"
+                      [(ngModel)]="inputPGShow"
+                    >
+                      <option [ngValue]="true">true</option>
+                      <option [ngValue]="false">false</option>
+                    </select>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="inputGroupSelect04"
+                        >포인트 구매 가능여부</label
+                      >
+                    </div>
+                    <select
+                      class="custom-select"
+                      id="inputGroupSelect04"
+                      [(ngModel)]="inputPGPointAvailability"
+                    >
+                      <option [ngValue]="true">true</option>
+                      <option [ngValue]="false">false</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-dismiss="modal"
+                    (click)="onPackageGuideAdd()"
+                  >
+                    추가
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- [ MODAL packageGuideAdd END] -->
+
+          <!-- [ MODAL productInfo START ] -->
+          <div class="modal" id="productInfo" *ngIf="selectPackage">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">패키지 상품 정보</h4>
+                  <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                  </button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">id</span>
+                    </div>
+                    <input
+                      type="text"
+                      value="{{ selectPackage.package_id }}"
+                      class="form-control"
+                      disabled
+                    />
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">상품등록일</span>
+                    </div>
+                    <input
+                      type="text"
+                      value="{{ selectPackage.create_timestamp | date }}"
+                      class="form-control"
+                      disabled
+                    />
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">판매채널</span>
+                    </div>
+                    <input
+                      type="text"
+                      value="{{ selectPackage.salesChannel_title }} (id : {{
+                        selectPackage.salesChannel_id
+                      }})"
+                      class="form-control"
+                      disabled
+                    />
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">패키지명</span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="selectPackage.title"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">가격</span>
+                    </div>
+                    <input
+                      type="number"
+                      [(ngModel)]="selectPackage.price"
+                      class="form-control text-right"
+                    />
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">￦</span>
+                    </div>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">자세히 링크 URL</span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="selectPackage.moreLink"
+                      class="form-control"
+                    />
+                  </div>
+
+                  <p class="text-secondary">미리보기사진 :</p>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">사진 URL</span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="selectPackage.thumb_imgUrl"
+                      class="form-control"
+                    />
+                  </div>
+                  <img
+                    src="{{ selectPackage.thumb_imgUrl }}"
+                    class="img-fluid mb-3"
+                    alt=""
+                  />
+
+                  <p class="text-secondary">구성품 :</p>
+                  <ng-container *ngFor="let sg of singles">
+                    <ng-container
+                      *ngFor="let psg of selectPackage.singles | keyvalue"
+                    >
+                      <div
+                        *ngIf="psg.key == sg.single_id"
+                        class="input-group mb-3"
+                      >
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">{{ sg.title }}</span>
+                        </div>
+                        <input
+                          type="number"
+                          [(ngModel)]="selectPackage.singles[psg.key]"
+                          class="form-control"
+                        />
+                      </div>
+                    </ng-container>
+                  </ng-container>
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">설명</span>
+                    </div>
+                    <textarea
+                      [(ngModel)]="selectPackage.description"
+                      class="form-control"
+                      style="min-height:100px;"
+                      autosize
+                    ></textarea>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="inputGroupSelect01"
+                        >보여주기</label
+                      >
+                    </div>
+                    <select
+                      class="custom-select"
+                      id="inputGroupSelect01"
+                      [(ngModel)]="selectPackage.show"
+                    >
+                      <option [ngValue]="true">true</option>
+                      <option [ngValue]="false">false</option>
+                    </select>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="inputGroupSelect02"
+                        >포인트 구매 가능여부</label
+                      >
+                    </div>
+                    <select
+                      class="custom-select"
+                      id="inputGroupSelect02"
+                      [(ngModel)]="selectPackage.point_availability"
+                      
+                    >
+                      <option [ngValue]="true">true</option>
+                      <option [ngValue]="false">false</option>
+                    </select>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                    (click)="onProductDelete()"
+                  >
+                    삭제
+                  </button>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-dismiss="modal"
+                    (click)="onProductUpdate()"
+                  >
+                    변경
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- [ MODAL productInfo END ] -->
+
+          <!-- [ MODAL packageGuideInfo START] -->
+          <div class="modal" id="packageGuideInfo">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">판매상품 가이드 추가</h4>
+                  <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                  </button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body" *ngIf="selectPackageGuide as pg">
+
+                  <p>ID : {{pg.packageGuide_id}}</p>
+
+                  <p>패키지 가이드 정보 :</p>
+
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">제목</span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="pg.title"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">미리보기 이미지 URL </span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="pg.thumb_imgUrl"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">자세히 링크 URL</span>
+                    </div>
+                    <input
+                      type="text"
+                      [(ngModel)]="pg.moreLink"
+                      class="form-control"
+                    />
+                  </div>
+                  <p>구성 패키지 : </p>
+                  <ul class="list-group mb-3">
+                      <li class="list-group-item" *ngFor="let pk of pg.packages">{{pk.package_title}}</li>
+                    </ul>
+                    
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">설명</span>
+                    </div>
+                    <textarea
+                      class="form-control"
+                      [(ngModel)]="pg.description"
+                      style="min-height: 100px;"
+                      aria-label="With textarea"
+                      autosize
+                    ></textarea>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="SelectPGInfoShow"
+                        >보여주기</label
+                      >
+                    </div>
+                    <select
+                      class="custom-select"
+                      id="SelectPGInfoShow"
+                      [(ngModel)]="pg.show"
+                    >
+                      <option [ngValue]="true">true</option>
+                      <option [ngValue]="false">false</option>
+                    </select>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="SelectPGInfoPointAvailability"
+                        >포인트구매가능여부</label
+                      >
+                    </div>
+                    <select
+                      class="custom-select"
+                      id="inputGroupSelect01"
+                      [(ngModel)]="pg.point_availability"
+                    >
+                      <option [ngValue]="true">true</option>
+                      <option [ngValue]="false">false</option>
+                    </select>
+                  </div>
+                  <!-- <p>가이드할 패키지 다시 구성:</p>
+                  <div
+                    class="btn-group btn-group-toggle mb-3 mr-3"
+                    data-toggle="button"
+                    aria-pressed="false"
+                    autocomplete="off"
+                    *ngFor="let p of packages"
+                  >
+                    <label
+                      class="btn btn-outline-secondary"
+                      (click)="selectPackageInPG(p)"
+                    >
+                      <input type="radio" name="jb-radio" id="jb-radio-1" />
+                      {{ p.title }}
+                    </label>
+                  </div> -->
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                    (click)="onPackageGuideDelete()"
+                  >
+                    삭제
+                  </button>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-dismiss="modal"
+                    (click)="onPackageGuideUpdate()"
+                  >
+                    변경
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- [ MODAL packageGuideInfo END] -->
+
+          <!-- [ admin content ng container END ] -->
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #guest>
+    <app-not-admin></app-not-admin>
+  </ng-template>
+</ng-container>
+
+<ng-template #notLogin>
+  <app-not-login></app-not-login>
+</ng-template>

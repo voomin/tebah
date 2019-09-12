@@ -1,0 +1,51 @@
+<div class="container">
+  <h4 class="mt-4 mb-3">온라인 주문서 삽입</h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">관리자</li>
+    <li class="breadcrumb-item">
+      <a routerLink="/admin/management-Order">주문관리</a>
+    </li>
+  </ol>
+  <div class="row">
+    <div class="col">
+        <h5>Excel 파일 업로드 : 규칙</h5>
+        <ul class="list-group mb-3">
+            <li class="list-group-item">열의 명칭을 꼭 준수해주길 바랍니다. <br>
+              <span class="badge badge-pill badge-secondary" *ngFor="let item of excs | keyvalue">{{item.value}}</span>
+            </li>
+            <li class="list-group-item">열의 순서는 상관 없습니다.</li>
+          </ul>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">업로드</span>
+          </div>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" #inputGroupFile01 (change)="incomingfile($event)" accept=".xlsx,.xls">
+            <label class="custom-file-label" for="inputGroupFile01" >{{inputGroupFile01.value}}</label>
+          </div>
+        </div>
+        <div class="mb-3">
+          <!-- <button type="button" class="btn btn-outline-secondary mr-2">다량학습</button> -->
+          <button type="button" class="btn btn-outline-secondary mr-2" (click)="onOrdersWating()">주문서 작성</button>
+        </div>
+        
+    </div>
+  </div>
+</div>
+
+
+
+<table class="table" *ngIf="orderArray as oa">
+    <ng-container *ngFor="let o of oa | keyvalue ; first as f">
+        <thead *ngIf="f">
+            <tr>
+              <th scope="col" *ngFor="let field of o.value | keyvalue">{{field.key}}</th>
+            </tr>
+          </thead>
+        <tbody>
+            <tr>
+              <td scope="col" *ngFor="let field of o.value | keyvalue">{{field.value}}</td>
+            </tr>
+        </tbody>
+    </ng-container>
+</table>

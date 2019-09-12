@@ -1,0 +1,36 @@
+
+  <div class="container">
+    <!-- Page Heading/Breadcrumbs-->
+  <h4 class="mt-4 mb-3">우리는 누구인가?</h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">회사소개</li>
+    <li class="breadcrumb-item active">동영상</li>
+  </ol>
+    <div class="row">
+
+      <ng-container *ngFor="let video of videos">
+          <div class="col-lg-4 col-sm-6 portfolio-item">
+              <div class="card h-100">
+                <a
+                  ><iframe
+                    class="card-img-top"
+                    [src]="video.src | safe"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen=""
+                  ></iframe
+                ></a>
+                <div class="card-body">
+                  <h4 class="card-title">
+                    <a href="{{video.link}}"
+                      >{{video.title}}</a
+                    >
+                  </h4>
+                  <p class="card-text">{{video.sub}}</p>
+                </div>
+              </div>
+            </div>
+      </ng-container>
+    </div>
+  </div>
+  <!-- /.container-->

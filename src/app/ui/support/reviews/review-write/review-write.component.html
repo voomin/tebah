@@ -1,0 +1,107 @@
+<div class="container" *ngIf="_auth.user$ | async as user; else notLogin">
+  <!-- Page Heading/Breadcrumbs-->
+  <h4 class="mt-4 mb-3">고객과 우리가 하나 되는 곳 ​<small> </small></h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">고객지원</li>
+    <li class="breadcrumb-item">
+      <a routerLink="/reviews">고객후기</a>
+    </li>
+    <li class="breadcrumb-item active">후기작성</li>
+  </ol>
+  <!-- Content Row-->
+  <div class="row">
+    <div class="col-lg-8 mb-4">
+      <h3>후기작성하기</h3>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit(uploadImg.files)">
+          <!-- <div class="form-group">
+              <label>이름 :</label>
+              <input type="text" formControlName="displayName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.displayName.errors }" />
+              <div *ngIf="submitted && f.displayName.errors" class="invalid-feedback">
+                  <div *ngIf="f.displayName.errors.required">이름을 입력해주세요.</div>
+              </div>
+          </div> -->
+          <div class="form-group">
+              <label>제목 : </label>
+              <input type="text" formControlName="reviewTitle" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.reviewTitle.errors }" />
+              <div *ngIf="submitted && f.reviewTitle.errors" class="invalid-feedback">
+                  <div *ngIf="f.reviewTitle.errors.required">제목을 입력해주세요.</div>
+              </div>
+          </div>
+          <div class="form-group">
+              <label>사진첨부 : </label>
+              <div class="custom-file">
+                <input 
+                #uploadImg
+                type="file"  
+                formControlName="uploadImg" 
+                class="form-control custom-file-input" 
+                [ngClass]="{ 'is-invalid': submitted && f.uploadImg.errors }" 
+                />
+                <label class="custom-file-label text-secondary" for="customFile">{{uploadImg.value}}</label>
+                <div *ngIf="submitted && f.uploadImg.errors" class="invalid-feedback">
+                    <div *ngIf="f.uploadImg.errors.required">사진을 첨부해주세요.</div>
+                </div>
+              </div>
+          </div>
+          <!-- <div class="form-group">
+            <label>사진첨부 : </label>
+            <div class="input-group input-file" name="Fichier1">
+              <span class="input-group-btn">
+                    <button class="btn btn-default btn-choose" type="button">Choose</button>
+                </span>
+                <input type="text" class="form-control" placeholder='Choose a file...' />
+                <span class="input-group-btn">
+                      <button class="btn btn-warning btn-reset" type="button">Reset</button>
+                </span>
+            </div>
+            <div *ngIf="submitted && f.uploadImg.errors" class="invalid-feedback">
+              <div *ngIf="f.uploadImg.errors.required">사진을 첨부해주세요.</div>
+            </div>
+          </div> -->
+          <div class="form-group">
+              <label>내용 : </label>
+              <textarea formControlName="content" rows="10" cols="100" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.content.errors }" style='resize: none;' ></textarea>
+              <div *ngIf="submitted && f.content.errors" class="invalid-feedback">
+                  <div *ngIf="f.content.errors.required">내용을 입력해주세요.</div>
+                  <div *ngIf="f.content.errors.maxlength">글자는 최대 999자 까지 입력가능합니다.</div>
+              </div>
+          </div>
+          
+          <div class="form-group">
+          
+            <button class="btn btn-primary">후기 남기기</button>
+            <!-- <div *ngIf="uploaded.success" class='p-3 mb-2 bg-success text-white'>
+              후기가 성공적으로 작성되었습니다.
+            </div>
+            <div *ngIf="uploaded.fail" class='p-3 mb-2 bg-warning text-dark'>
+              죄송합니다. 서버 또는 네트워크에 문제가 생겨 업로드 되지 않았습니다.
+            </div>
+            <div *ngIf="uploading; then thenBlock; else elseBlock">
+            </div>
+            <ng-template #thenBlock>
+              <div class="spinner-border text-info" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </ng-template>
+            <ng-template #elseBlock>
+            </ng-template>
+               -->
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+<ng-template #notLogin>
+  <div class="text-center my-5">
+    <h2 class="mb-2">후기작성하기</h2>
+    <p class="text-secondary">
+      후기는 회원만 작성할 수 있습니다 <br>
+      바로 <a routerLink='/login'>로그인</a>페이지 이동
+    </p>
+    <p class="text-secondary">
+        간편 <a routerLink='/signUp'>회원가입</a>하러가기
+    </p> 
+  </div>
+</ng-template>
+
+

@@ -1,0 +1,102 @@
+<button type="button" class="btn btn-primary mb-3 w-100" data-toggle="modal" data-target="#addToBasketModal" *ngIf="selectProduct">
+  구매하기
+</button>
+<div class="shadow-sm bg-light rounded p-3 mb-3">
+  <h5>우리의 제품</h5>
+  <hr />
+  <!--.card-body-->
+  <div
+    class="accordion"
+    id="accordionExample"
+    role="tablist"
+    aria-multiselectable="true"
+  >
+    <ng-container *ngFor="let menu of sideMenu; index as i">
+      <div id="heading{{ i }}">
+        <h5 class="mb-0">
+          <button
+            class="btn btn-link"
+            type="button"
+            data-toggle="collapse"
+            [attr.data-target]="'#collapse' + i"
+            aria-expanded="true"
+            aria-controls="collapseOne"
+          >
+            {{ menu.title }}
+          </button>
+        </h5>
+      </div>
+      <div
+        class="collapse"
+        id="collapse{{ i }}"
+        [attr.aria-labelledby]="'heading' + i"
+        data-parent="#accordionExample"
+      >
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let item of menu.list">
+              <a class="text-secondary" routerLink="{{ item.link }}">{{
+                item.title
+              }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+
+<!-- [ Modal addToBasketModal START ] -->
+<div class="modal" id="addToBasketModal">
+    <div class="modal-dialog">
+      <div class="modal-content" *ngIf="selectProduct | async as p">
+        <div class="modal-header">
+          <h4 class="modal-title">장바구니에 추가</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+              <img src="{{p.thumb_imgUrl}}" class="img-fluid img-thumbnail mb-3" alt="">
+              <p>{{p.title}}</p>
+              <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">수량</label>
+                  <div class="col-sm-10 text-right">
+                    <div class="input-group">
+                          <div class="input-group-prepend">
+                              <button class="btn btn-outline-secondary" (click)="onAddCount(-1)" type="button">-</button>
+                            </div>
+                          <input type="number" class="form-control text-center" placeholder="0" [(ngModel)]="selectProductCount">
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" (click)="onAddCount(1)">+</button>
+                          </div>
+                        </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">금액</label>
+                  <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext text-right font-weight-bold" value="{{p.price*selectProductCount|number}}원">
+                  </div>
+                </div>
+                <div class="mb-3 text-secondary text-right" *ngIf="p.point_availability">
+                  포인트로 구매가 가능한 제품입니다
+                </div>
+              
+        </div>
+        <div class="modal-footer">
+          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button> -->
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+          <ng-container *ngIf="auth.user$ | async as user; else notLogin">
+            <button type="button" class="btn btn-light" data-dismiss="modal" (click)="onSubmitAddtoBasket(p)"> <i class="icon ion-bag"></i> 장바구니 담기</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="onSubmitAddtoBasket(p)" routerLink='/order'>즉시구매</button>
+          </ng-container>
+          <ng-template #notLogin>
+            <button type="button" class="btn btn-light" data-dismiss="modal" routerLink="/login">로그인 이동</button>
+          </ng-template>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <!-- [ Modal addToBasketModal END ] -->

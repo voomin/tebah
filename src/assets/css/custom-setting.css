@@ -1,0 +1,51 @@
+/* Basic Tag */ 
+@import url(https://cdn.rawgit.com/openhiun/hangul/14c0f6faa2941116bb53001d6a7dcd5e82300c3f/nanumbarungothic.css);
+* {
+  font-family: 'Nanum Barun Gothic', sans-serif;
+}  
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) { .card{ display: block; }}
+/* IE6,7,9,10 */
+@media screen and (min-width: 640px), screen\9 { .card{ display: block; }}
+/* IE6,7 */
+@media screen\9 { .card{ display: block; }}
+/* IE8 */
+@media \0screen { .card{ display: block; }}
+/* IE6,7,8 */
+@media \0screen\,screen\9 { .card{ display: block; }}
+/* IE9,10 */
+@media screen and (min-width:0\0){ .card{ display: block; }}
+
+
+.zoom {      
+    -webkit-transition: all 0.35s ease-in-out;    
+    -moz-transition: all 0.35s ease-in-out;    
+    transition: all 0.35s ease-in-out;     
+    cursor: -webkit-zoom-in;      
+    cursor: -moz-zoom-in;      
+    cursor: zoom-in;  
+}     
+    
+.zoom:hover,  
+.zoom:active,   
+.zoom:focus {
+    /**adjust scale to desired size, 
+    add browser prefixes**/
+    -ms-transform: scale(2.5);    
+    -moz-transform: scale(2.5);  
+    -webkit-transform: scale(2.5);  
+    -o-transform: scale(2.5);  
+    transform: scale(2.5);    
+    position:relative;      
+    z-index:100;  
+}
+
+/* CUSTOM voomin kim START */
+
+.bg-cover{
+    background-size:cover; 
+    background-position: center center;
+}
+.h-261{
+    height:261px;
+}
+/* CUSTOM voomin kim END */

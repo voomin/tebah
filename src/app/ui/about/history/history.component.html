@@ -1,0 +1,40 @@
+<div class="container">
+    <!-- Page Heading/Breadcrumbs-->
+    <h4 class="mt-4 mb-3">우리는 누구인가?<small> </small></h4>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active">회사소개</li>
+      <li class="breadcrumb-item active">우리가 걸어가는 길</li>
+    </ol>
+    <!-- Blog Post-->
+    <br />
+    <ng-container *ngFor="let item of history">
+      <div class="row">
+          <div class="col-md-5">
+            <a><img class="img-fluid rounded mb-3 mb-md-0" src="{{item.src}}" alt="" /></a>
+            </div>
+          <div class="col-md-7">
+            <h5 class="font-weight-bold">{{item.title}}</h5>
+            <h6 innerHTML='{{item.sub}}'></h6>
+            <p class="card-text text-muted mt-3" innerHTML='{{item.text}}'></p>
+            
+            <a *ngIf='item.button' class="btn btn-primary text-white" href='{{item.button.link}}'>
+              {{item.button.title}}
+              <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+            
+            <ng-container *ngIf="item.button_group">
+                <div class="btn-group dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">자세히</button>
+                    <div class="dropdown-menu">
+                      <a *ngFor="let past of item.button_group" class="dropdown-item">
+                        {{past}}
+                      </a>
+                    </div>
+                </div>
+              </ng-container>
+          </div>
+            
+      </div>
+      <hr/>
+    </ng-container>
+  </div>

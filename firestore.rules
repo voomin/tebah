@@ -1,0 +1,167 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+  	function root(){
+    	return get(/databases/$(database)/documents/AdminData/ROOT).data.master_uid == request.auth.uid;
+    }
+    function admin(){
+    	return 
+      root()||
+      get(/databases/$(database)/documents/AdminData/admin/admins/$(request.auth.uid)).data.uid == request.auth.uid;
+    }
+    
+  	match /AdminData/{document=**} { allow read,write : if root(); }
+    match /SalesChannels/{salesChannel_id} { 
+      allow read: if true;
+      allow write: if admin();
+    }
+    
+    // [ user START ]
+    match /users/{userId} { 
+      allow read, update: if request.auth.uid == userId || admin();
+      allow create: if 
+                      request.auth.uid == userId &&
+                      request.resource.data.uid == userId;
+      match /basket/{package_id} {
+        allow read, delete: if request.auth.uid == userId;
+        allow create, update: if 
+                                request.auth.uid == userId &&
+                                request.resource.data.package_count > 0 &&
+                                request.resource.data.package_total_price == (request.resource.data.package_count * get(/databases/$(database)/documents/Products/Components/Packages/$(request.resource.data.package_id)).data.price)
+                                //availablePackage();
+        }
+      match /data/{document=**} { 
+        allow read: if request.auth.uid == userId;
+        allow write: if false;
+      }
+    }
+    // [ user END ]
+    
+    // [ ServiceCenterBoard START ]
+    match /ServiceCenterBoard {
+    	match /events/contain/{eventId} { 
+      	allow read: if true; 
+        allow write: if admin();
+      }
+    	match /comment/comments/{commentId} {
+        allow read: if true;
+        allow update, delete: if request.auth.uid == resource.data.from_uid;
+        allow create: if request.auth.uid != null;
+    	}
+    	match /reviews/contain/{reviewId} { 
+        allow read: if true;
+         allow write: if resource.data.author_id == request.auth.uid || admin();
+        // allow update, delete: if resource.data.author_id == request.auth.uid || admin();
+        // allow create: if true;
+        //allow write: if true;
+      }
+    }
+    // [ ServiceCenterBoard END ]
+    
+    // [ Point_logs START ]
+    match /point {
+      match /DEPLOY { 
+        allow read: if admin(); 
+        allow delete: if false;
+        allow update, create: if 
+                      root() 
+                      ;
+      }
+      match /root_wallet { allow read, write: if root(); }
+      match /logs {
+        match /deploy_point_history/{dph_id} { 
+          allow read: if true;
+          allow update, delete: if false;
+          allow create: if root();
+        }
+        match /user_point/{user_id} {
+          allow read: if true;
+          allow write: if root();
+        }
+        match /point_transaction/{pttran_id} {
+          allow read: if true;
+          allow update, delete: if false;
+          allow create: if
+                          root() ||
+                          request.auth.uid == resource.data.from_uid &&
+                          request.resource.data.point is int &&
+                          request.resource.data.point > 0 &&
+                          request.resource.data.point <= get(/databases/$(database)/documents/point/logs/user_point/$(request.auth.uid)).data.have_point &&
+                          get(/databases/$(database)/documents/users/$(resource.data.from_uid)).data.uid==request.resource.data.from_uid &&
+                          request.resource.data.to_uid == 'root' ||
+                          get(/databases/$(database)/documents/users/$(resource.data.to_uid)).data.uid==request.resource.data.to_uid
+                          
+        }
+      } 
+    }
+    // [ Point_logs END ]
+
+    //[ Products START ]
+    match /Products { 
+      match /Components/Singles/{single_id} {
+        allow read: if true; 
+        allow write: if admin(); 
+      }
+      match /Components/Packages/{package_id} {
+        allow read: if true;
+        allow delete: if admin();
+        allow create, update: if 
+                        admin() &&
+                        request.resource.data.price >= 0 &&
+                        request.resource.data.title != null &&
+                        request.resource.data.salesChannel_id == get(/databases/$(database)/documents/SalesChannels/$(request.resource.data.salesChannel_id)).data.salesChannel_id
+                        ;
+        match /tags/{tag} { allow read, write: if admin(); }
+      }
+      match /Guide/PackageGuides/{packageGuide_id} {
+        allow read: if true;
+        allow delete: if admin();
+        allow create, update: if 
+                      admin() &&
+                      request.resource.data.packages.size() > 0 &&
+                      request.resource.data.title != null &&
+                      request.resource.data.thumb_imgUrl != null 
+                      ;
+      }
+      match /AutoProductComponent{
+        match /input/{input_id} {
+          allow read, write: if true;
+        }
+        match /output/{output_id} {
+          allow read: if true;
+          allow write: if false;
+        }
+      }
+    }
+    //[ Products END ]
+    
+    //[ Orders START ]
+    match /orders/{oid} {
+      allow read: if request.auth.uid == resource.data.buyer_uid || admin();
+      allow update, delete: if false;
+      allow create: if 
+                  request.auth.uid == request.resource.data.buyer_uid &&
+                  request.resource.data.shipping_address != null &&
+                  request.resource.data.salesChannel_id == get(/databases/$(database)/documents/SalesChannels/$(request.resource.data.salesChannel_id)).data.salesChannel_id &&
+                  request.resource.data.pay_amount >= 0 &&
+                  request.resource.data.pay_amount == get(/databases/$(database)/documents/users/$(request.auth.uid)/data/basket).data.amountToPay &&
+                  paymentByPoint()
+                  ;
+      function paymentByPoint(){
+        return request.resource.data.pay_type == 'point' &&
+               request.resource.data.pay_amount <= get(/databases/$(database)/documents/point/logs/user_point/$(request.auth.uid)).data.have_point &&
+               ! root()
+               ;
+      }
+    }
+    //[ Orders END ]
+    //[ OrdersToChangeStatus START ]
+    match /OrdersToChangeStatus/{oid} {
+      allow read: if false;
+      allow update, delete: if false;
+      allow create: if 
+                  request.auth.uid == get(/databases/$(database)/documents/orders/$(oid)).data.buyer_uid ||
+                  admin();
+    }
+    //[ OrdersToChangeStatus END ]
+  }
+}

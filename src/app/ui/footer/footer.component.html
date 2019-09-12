@@ -1,0 +1,44 @@
+<div class="footer-dark bg-dark">
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6 col-md-3 item mb-3" *ngFor="let menu of menus">
+          <h3>{{ menu.title }}</h3>
+          <div *ngIf="menu.list">
+            <ul>
+              <li *ngFor="let item of menu.list">
+                <a routerLink="{{ item.link }}">{{ item.title }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6 item text">
+          <h3>(주) 테바</h3>
+          <p>
+            <small
+              >본사 : 31538 충청남도 아산시 신창면 순천향로 22 418호 
+              <br/>
+              공장·연구소 : 31094 충청남도 천안시 서북구 백석공단 1로 42</small
+            ><br /><small>
+              대표이사 : 최상필 | 사업자등록번호 : 517-87-00756</small
+            ><br /><small> TEL : 041.532.7605 | FAX : 041.417.7605 </small
+            ><br /><small> E-mail : tebahmail@gmail.com</small>
+          </p>
+        </div>
+        <div class="col item social">
+          <a href="mailto:tebahmail@gmail.com"><i class="icon ion-email"></i></a
+          ><a
+            href="https://www.youtube.com/channel/UCtfqASYPU36gF0pI_9emRig"
+            target="_blank"
+            ><i class="icon ion-social-youtube"></i></a
+          ><a href="https://www.instagram.com/baro_tok/" target="_blank"
+            ><i class="icon ion-social-instagram"></i></a
+          ><a href="https://www.facebook.com/153barotok" target="_blank"
+            ><i class="icon ion-social-facebook"></i
+          ></a>
+        </div>
+      </div>
+      <p class="copyright">Copyright © 2019 Tebah Corp.</p>
+    </div>
+  </footer>
+</div>

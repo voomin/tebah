@@ -1,0 +1,26 @@
+<div class="container">
+  <h4 class="mt-4 mb-3">우리는 누구인가?</h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">회사소개</li>
+    <li class="breadcrumb-item active">우리의 소식</li>
+  </ol>
+  <div class="row">
+    <ng-container *ngFor="let newPost of news">
+        <div class="col-lg-4 col-sm-6 mb-4">
+            <div class="card h-100">
+              <a class="tt2o3k4jjkj"
+                ><div
+                  class="bg-cover h-261"
+                  [ngStyle]="{'background-image':'url('+newPost.imgSrc+')'}"
+                  alt=""
+                ></div
+              ></a>
+              <div class="card-body">
+                <h6 class="card-title">{{newPost.title}}</h6>
+                <p class="card-text text-muted">{{newPost.date}}</p>
+              </div>
+            </div>
+          </div>  
+    </ng-container>
+  </div>
+</div>

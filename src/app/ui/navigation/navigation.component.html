@@ -1,0 +1,108 @@
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/"> 
+      <img src="assets/img/logo.png" />
+    </a>
+    <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown" *ngFor="let menu of menus">
+          <ng-container *ngIf="menu.link">
+            <a class="nav-link" routerLink="{{menu.link}}" (click)='toggleNavbar()'>{{menu.title}}</a>
+          </ng-container>
+          <ng-container *ngIf="menu.list">
+              <a class="nav-link dropdown-toggle" id="navbarDropdownAbout" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{menu.title}}
+                </a>
+                <div *ngIf="menu.list">
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownAbout">
+                    <a *ngFor="let item of menu.list" class="dropdown-item" routerLink="{{item.link}}" (click)='toggleNavbar()'>{{item.title}}</a>
+                  </div>
+                </div>  
+          </ng-container>
+        </li>
+      </ul>  
+    </div>
+    <div class='nav navbar-nav mx-1'>
+            <a *ngIf="auth.user$ | async as user; else login" class="nav-link" routerLink="/my" (click)="hideNavbar()">
+                    <img *ngIf="user.photoURL; else defaultIcon" src="{{user.photoURL}}" class='rounded-circle' alt="" style="width:30px; height:30px;">  
+                    <ng-template #defaultIcon>
+                      <i class="icon ion-person"></i>
+                    </ng-template>
+            </a>
+            <ng-template #login>
+                    <a routerLink="/login" class="nav-link" (click)="hideNavbar()">로그인</a>
+            </ng-template>
+    </div>
+    <div class="nav navbar-nav">
+            <a class="nav-link" data-toggle="modal" data-target="#basketModal" (click)="hideNavbar()" style="cursor:pointer;">
+              <i class="icon ion-bag"></i>
+              <span class="badge badge-danger badge-pill ml-1" *ngIf="(basket | async)?.length > 0">+</span>
+            </a>
+    </div>
+    <div class="nav navbar-nav">
+      <a routerLink="/mall" class="nav-link" (click)="hideNavbar()">테바몰</a>
+    </div>
+    <button class="navbar-toggler navbar-toggler-right" type="button" (click)="toggleNavbar()">
+      <span class="navbar-toggler-icon" [hidden]="navbarOpen"></span>
+      <span class="icon ion-close" [hidden]="!navbarOpen"></span>
+    </button>
+  </div>
+</nav>
+
+
+<!-- [ Modal basketModal START ] -->
+<div class="modal" id="basketModal">
+  <div class="modal-dialog" *ngIf="auth.user$ | async as user; else notLoginBC">
+    <div class="modal-content" *ngIf="basket | async as basket;">
+      <div class="modal-header">
+        <h4 class="modal-title">장바구니 확인</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+          <div class="modal-body" *ngIf="basket.length > 0; else emptyBasket">
+              <ng-container *ngFor="let p of basket">
+                  <ul class="list-group">
+                      <li class="list-group-item mb-3">
+                        <p>{{p.package_title}}
+                            <span class="badge badge-pill close" aria-label="Close" (click)="onDeltoBasket(p.id)"><i class="icon ion-close-circled"></i></span>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span>{{p.package_count}}개</span>
+                          <span>{{p.package_total_price | number}}원</span>
+                        </div>
+                      </li>
+                    </ul>
+              </ng-container>
+          </div>
+          <ng-template #emptyBasket>
+              <div class="modal-body">
+                장바구니가 비어 있어요 <br>
+                <a routerLink='/mall' data-dismiss="modal">테바몰</a>로 이동
+              </div>
+          </ng-template>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal" *ngIf="basket.length > 0" routerLink='/mall'>테바몰</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="basket.length > 0" routerLink='/order'>구매하기</button>
+      </div>
+    </div>
+  </div>
+  <ng-template #notLoginBC>
+      <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">장바구니 확인</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              로그인이 되어 있지 않습니다.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" routerLink="/login">로그인 이동</button>
+            </div>
+          </div>
+        </div>
+  </ng-template>
+</div>
+<!-- [ Modal basketModal END ] -->

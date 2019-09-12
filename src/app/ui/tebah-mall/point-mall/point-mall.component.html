@@ -1,0 +1,61 @@
+<div class="container">
+    <h4 class="mt-4 mb-3">적립금몰</h4>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/mall">테바몰</a>
+      </li>
+    </ol>
+    <div class="row">
+      <div class="col">
+          <ng-container *ngIf="packageGuides | async as pgs; else loading">
+            <div class="card-columns">
+              <div class="card" *ngFor="let pg of pgs">
+                <img
+                  class="card-img-top"
+                  src="{{ pg.thumb_imgUrl }}"
+                  alt="Card image cap"
+                />
+                <div class="card-body">
+                  <h5 class="text-right">{{ pg.min_price | number }}원</h5>
+                  <p class="card-title font-weight-bold">{{ pg.title }}</p>
+                  <p class="card-text">{{ pg.description }}</p>
+                  <a class="" routerLink="{{ pg.moreLink }}">자세히</a>
+                </div>
+                <div class="card-footer">
+                  <button class="btn btn-outline-secondary" (click)="onBuyinPG(pg)">구매하기</button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="packages | async as pks">
+              <hr *ngIf="pks.length != 0">
+              <div class="card-columns">
+                <div class="card" *ngFor="let pk of pks">
+                  <img
+                    class="card-img-top"
+                    src="{{ pk.thumb_imgUrl }}"
+                    alt="Card image cap"
+                  />
+                  <div class="card-body">
+                    <h5 class="text-right">{{ pk.price | number }}원</h5>
+                    <p class="card-title font-weight-bold">{{ pk.title }}</p>
+                    <p class="card-text">{{ pk.description }}</p>
+                    <a class="" routerLink="{{ pk.moreLink }}">자세히</a>
+                  </div>
+                  <div class="card-footer">
+                    <button class="btn btn-outline-secondary" (click)="onBuyinPK(pk)">구매하기</button>
+                  </div>
+                </div>
+              </div>
+          </ng-container>
+        <ng-template #loading>
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <!-- ROW END -->
+  </div>
+  
+  

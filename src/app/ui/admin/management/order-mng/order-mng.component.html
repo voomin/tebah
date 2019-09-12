@@ -1,0 +1,318 @@
+<ng-container *ngIf="auth.user$ | async as user; else notLogin">
+  <ng-container *ngIf="user.admin; else guest">
+    <div class="container-fluid">
+      <div class="row">
+        <app-sidebar-admin></app-sidebar-admin>
+        <div class="col col-lg-9 m-3">
+          <!-- [ admin content ng container START ] -->
+
+          <div class="container text-center">
+            <div class="row justify-content-center">
+              <div class="col-md-7">
+                <h1 class="font-weight-light mt-4">주문관리</h1>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <button
+            class="btn btn-outline-primary mr-2"
+            (click)="selectOrderNew()"
+          >
+            신규주문 조회
+          </button>
+          <button
+            class="btn btn-outline-danger mr-2"
+            (click)="selectOrderCancel()"
+          >
+            주문취소 조회
+          </button>
+          <button
+            class="btn btn-outline-secondary mr-2"
+            (click)="selectOrderConfirm()"
+          >
+            발주확인 조회
+          </button>
+          <button
+            class="btn btn-outline-info mr-2"
+            (click)="selectOrderShipping()"
+          >
+            배송중 조회
+          </button>
+          <button class="btn btn-outline-success mr-2"
+          (click)="selectOrderCompleted()">배송완료 조회</button>
+          <!-- <hr />
+          <button
+            class="btn btn-secondary mr-2"
+            data-toggle="modal"
+            data-target="#orderConfirm"
+          >
+            발주확인이란?
+          </button>
+          <button
+            class="btn btn-info mr-2"
+            data-toggle="modal"
+            data-target="#invoiceAdd"
+          >
+            송장등록이란?
+          </button> 
+          <hr /> -->
+          <div class="my-3">
+            <a routerLink='/admin/management-Order-select' *ngIf="selectOrderStatus == '발주확인'">주문전체 상세 확인하기</a>
+            <!-- <button class="btn btn-primary" routerLink='/admin/OnlineOrderInsert'>온라인 주문서 작성</button> -->
+          </div>
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">주문시간</th>
+                <th scope="col">주문자</th>
+                <th scope="col" class="text-right">지불금액</th>
+                <th scope="col">쇼핑몰</th>
+                <th scope="col">상태</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="orders | async as orders">
+              <ng-container *ngIf="orders.length > 0; else emptyOrders">
+                <tr
+                  *ngFor="let o of orders"
+                  (click)="onOrderInfo(o)"
+                  data-toggle="modal"
+                  data-target="#orderInfoModal"
+                  style="cursor: pointer;"
+                >
+                  <td>
+                    {{ o.create_timestamp | date: "yyyy.MM.dd (HH:mm:ss)" }}
+                  </td>
+                  <td>{{ o.buyer_displayName }}</td>
+                  <td class="text-right">
+                    {{ o.pay_amount | number }}{{ o.pay_type }}
+                  </td>
+                  <td>{{ o.salesChannel_title }}</td>
+                  <td>{{ o.order_status }}</td>
+                </tr>
+              </ng-container>
+              <ng-template #emptyOrders>
+                조회된 주문이 없습니다.
+              </ng-template>
+              
+            </tbody>
+          </table>
+
+          <!-- [ MODAL orderInfoModal START ] -->
+          <div class="modal" id="orderInfoModal">
+            <div class="modal-dialog" *ngIf="auth.user$ | async as user">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">주문정보 확인</h4>
+                  <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="container-fluid" *ngIf="selectOrder as o">
+                    <p>주문ID : {{ o.order_id }}</p>
+                    <p>주문상태 : {{ o.order_status }}</p>
+                    <p>롯데택배 송장번호 : {{ o.invoice }}</p>
+                    <p>
+                      주문날짜 :
+                      {{ o.create_timestamp | date: "yyyy.MM.dd (HH:mm:ss)" }}
+                    </p>
+                    <p>주문자 : {{ o.buyer_displayName }}</p>
+                    <p>수취인 : {{ o.reciever_displayName }}</p>
+                    <p>수취인 전화번호 : {{ o.reciever_tel }}</p>
+                    <p>배송지 : {{ o.shipping_address }}</p>
+                    <p>배송메세지 : {{ o.shipping_message }}</p>
+                    <p>우편번호 : {{ o.shipping_postcode }}</p>
+
+                    <p>
+                      구매처 : {{ o.salesChannel_title }}
+                      <small>( id : {{ o.salesChannel_id }})</small>
+                    </p>
+
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">결제금액</span>
+                      </div>
+                      <input
+                        type="text"
+                        class="form-control text-right"
+                        value="{{ o.pay_amount | number }}"
+                      />
+                      <div class="input-group-append">
+                        <span class="input-group-text">{{ o.pay_type }}</span>
+                      </div>
+                    </div>
+
+                    <p class="text-right mb-3">
+                      <small
+                        >(배송비 포함 : {{ o.shipping_price | number }})</small
+                      >
+                    </p>
+                    <p>주문품목 :</p>
+                    <ul class="list-group mb-3">
+                      <li
+                        class="list-group-item"
+                        *ngFor="let p of o.components_packages"
+                      >
+                        {{ p.package_title }} * {{ p.package_count }}개 =
+                        {{ p.package_total_price | number }}￦
+                      </li>
+                    </ul>
+                    <form class="mb-3" *ngIf="selectOrderStatus == '발주확인' || selectOrderStatus == '배송중'">
+                      <div class="form-row">
+                        <!-- <div class="col">
+                            <input type="text" class="form-control" placeholder="택배사">
+                          </div> -->
+                        <div class="col">
+                          <input
+                            #invoice
+                            type="number"
+                            class="form-control"
+                            placeholder="운송장번호"
+                          />
+                        </div>
+                        <div class="col">
+                          <button
+                            class="btn btn-primary"
+                            (click)="
+                              submitOrderInvoiceInsert(
+                                selectOrder?.order_id,
+                                invoice.value
+                              )
+                            "
+                            data-dismiss="modal"
+                          >
+                            송장등록 및 변경
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    닫기
+                  </button>
+                  <button
+                    class="btn btn-outline-secondary"
+                    data-dismiss="modal"
+                    (click)="submitOrderConfirm(selectOrder?.order_id)"
+                    *ngIf="selectOrderStatus == '신규주문'"
+                  >
+                    발주확인 상태로 변경
+                  </button>
+                  <button
+                    class="btn btn-outline-success"
+                    data-dismiss="modal"
+                    (click)="submitOrderCompleted(selectOrder?.order_id)"
+                    *ngIf="selectOrderStatus == '배송중'"
+                  >
+                    배송완료로 변경
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- [ MODAL orderInfoModal END ] -->
+
+          <!-- [ admin content ng container END ] -->
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #guest>
+    <app-not-admin></app-not-admin>
+  </ng-template>
+</ng-container>
+
+<ng-template #notLogin>
+  <app-not-login></app-not-login>
+</ng-template>
+
+<!-- Modal -->
+<!-- <div
+  class="modal fade"
+  id="orderConfirm"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">발주확인하기</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <small class="text-secondary font-italic"
+          >? 신규주문상태의 주문들을 발주확인으로 변경한다</small
+        >
+        <p class="my-3">
+          모든 신규주문 상태의 주문들을 발주확인상태로 변경합니다.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          닫기
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="submitOrdersConfirm()"
+        >
+          발주확인
+        </button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Modal -->
+<!-- <div
+  class="modal fade"
+  id="invoiceAdd"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">송장등록하기</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <small class="text-secondary font-italic"
+          >? 발주확인 상태의 주문들에 송장을 등록하여 배송중 상태로
+          변경한다</small
+        >
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          닫기
+        </button>
+        <button type="button" class="btn btn-primary">송장등록</button>
+      </div>
+    </div>
+  </div>
+</div> -->

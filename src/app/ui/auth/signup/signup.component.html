@@ -1,0 +1,46 @@
+<!-- main app container -->
+<div class="jumbotron mb-0">
+  <div class="container">
+      <div class="row">
+          <div class="col-md-6 offset-md-3">
+              <h3>테바 회원가입</h3>
+              <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                  <div class="form-group">
+                      <label>이름</label>
+                      <input type="text" formControlName="name" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+                      <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                          <div *ngIf="f.name.errors.required">이름을 입력해주세요</div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label>이메일</label>
+                      <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                      <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                          <div *ngIf="f.email.errors.required">이메일을 입력해주세요</div>
+                          <div *ngIf="f.email.errors.email">이메일 형식이 맞지 않습니다. 예시) name@example.com</div>
+                      </div>
+                      <div class='text-secondary mx-1 text-right'>
+                        <small>*유효하지 않은 이메일일 경우 비밀번호를 변경할 수 없습니다.</small>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label>비밀번호</label>
+                      <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }"/>
+                      <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                          <div *ngIf="f.password.errors.required">비밀번호를 입력해주세요</div>
+                          <div *ngIf="f.password.errors.minlength">비밀번호를 최소 6자리 이상 입력해주세요</div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                    <p class="text-secondary">
+                        회원가입시 (주)테바의 
+                        <a routerLink='/terms'>개인정보 및 데이터 정책</a>
+                        에 동의하게 됩니다.
+                    </p>
+                    <button class="btn btn-primary">회원가입</button>  
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+</div>

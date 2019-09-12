@@ -1,0 +1,72 @@
+<div class="col">
+  <div class="bg-light">
+    <ul class="list-group">
+      <li class="list-group-item list-group-item-dark">홈페이지 관리</li>
+      <li class="list-group-item">
+        <ul class="list-group list-group-flush rounded">
+          <a
+            class="list-group-item list-group-item-light"
+            [routerLink]="['/admin/management-user']"
+          >
+            <i class="icon ion-person"></i>
+            사용자</a
+          >
+          <!-- <a class='list-group-item list-group-item-light' [routerLink]="[ '/admin/management-user' ]">관리자</a> -->
+          <a
+            class="list-group-item list-group-item-light"
+            [routerLink]="['/admin/management-point']"
+            >
+            <i class="icon ion-pinpoint"></i>
+            포인트</a
+          >
+          <a
+            class="list-group-item list-group-item-light"
+            [routerLink]="['/admin/management-event']"
+            >
+            <i class="icon ion-alert"></i>
+            이벤트</a
+          >
+        </ul>
+      </li>
+
+      <li class="list-group-item list-group-item-dark">테바관리</li>
+      <li class="list-group-item">
+        <ul class="list-group list-group-flush rounded">
+          <a
+            class="list-group-item list-group-item-light"
+            [routerLink]="['/admin/management-SingleProduct']"
+            >고유상품</a
+          >
+          <a
+            class="list-group-item list-group-item-light"
+            [routerLink]="['/admin/management-PackageProduct']"
+            >판매상품</a
+          >
+          <a
+            class="list-group-item list-group-item-light"
+            [routerLink]="['/admin/management-SalesChannels']"
+            >판매채널</a
+          >
+          <a
+            class="list-group-item list-group-item-light"
+            [routerLink]="['/admin/management-Order']"
+            >
+            <i class="icon ion-android-list"></i>
+            주문관리</a
+          >
+        </ul>
+      </li>
+
+      <li class="list-group-item list-group-item-dark">통계</li>
+      <li class="list-group-item">
+        <ul class="list-group list-group-flush rounded">
+          <a
+            class="list-group-item list-group-item-light"
+            [routerLink]="['/admin/graph']"
+            >방문자 그래프 확인</a
+          >
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>

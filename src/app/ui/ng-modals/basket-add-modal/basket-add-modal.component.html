@@ -1,0 +1,133 @@
+<div class="modal-header">
+  <h4 class="modal-title">장바구니 추가</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <ng-container *ngIf="pg">
+    <div class="d-flex justify-content-between">
+      <p>상품을 선택해 주세요</p>
+      <!-- <p>{{pg.min_price | number}}원</p> -->
+    </div>
+    <div class="list-group">
+      <div
+        *ngFor="let pk of pg.packages"
+        class="list-group-item list-group-item-action flex-column align-items-start"
+        (click)="onPackage(pk.package_id)"
+      >
+        <div class="d-flex w-100 justify-content-between">
+          <p class="mb-1">{{ pk.package_title }}</p>
+          <small *ngIf="pk.package_price - pg.min_price as priceGap"
+            >+ {{ priceGap | number }}원</small
+          >
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="product as p">
+    <img
+      src="{{ p.thumb_imgUrl }}"
+      class="img-fluid img-thumbnail my-3"
+      alt=""
+    />
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label">상품명</label>
+      <div class="col-sm-10">
+        <input
+          type="text"
+          readonly
+          class="form-control-plaintext"
+          value="{{ p.title }}"
+        />
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label">설명</label>
+      <div class="col-sm-10">
+        <textarea
+          type="text"
+          readonly
+          class="form-control-plaintext"
+          value="{{ p.description }}"
+          autosize
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label">수량</label>
+      <div class="col-sm-10 text-right">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <button
+              class="btn btn-outline-secondary"
+              (click)="onAddCount(-1)"
+              type="button"
+            >
+              -
+            </button>
+          </div>
+          <input
+            type="number"
+            class="form-control text-center"
+            placeholder="0"
+            [(ngModel)]="countSelectProduct"
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              (click)="onAddCount(1)"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label">금액</label>
+      <div class="col-sm-10">
+        <input
+          type="text"
+          readonly
+          class="form-control-plaintext text-right font-weight-bold"
+          value="{{ p.price * countSelectProduct | number }}원"
+        />
+      </div>
+    </div>
+    <div class="mb-3 text-secondary text-right" *ngIf="p.point_availability">
+      포인트로 구매가 가능한 제품입니다
+    </div>
+  </ng-container>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="activeModal.close('Close click')"
+  >
+    닫기
+  </button>
+  <button
+    type="button"
+    class="btn btn-light"
+    (click)="onSubmit()"
+  >
+    <i class="icon ion-bag"></i>장바구니 담기
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="onSubmit()"
+    routerLink="/order"
+  >
+    즉시구매
+  </button>
+</div>

@@ -1,0 +1,46 @@
+<div class="container">
+  <!-- Page Heading/Breadcrumbs-->
+  <h4 class="mt-4 mb-3">고객과 우리가 하나 되는 곳 ​<small> </small></h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">고객지원</li>
+    <li class="breadcrumb-item active">이벤트</li>
+  </ol>
+  <!-- Blog Post-->
+  
+  <ng-container *ngFor="let event of events | async event">
+    <div class="card mb-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <a href="{{event.link}}"
+                ><img
+                  class="img-fluid rounded mb-3 mb-md-0"
+                  src="{{event.imgSrc}}"
+                  alt=""
+              /></a>
+            </div>
+            <div class="col-lg-6">
+              <h4 class="card-title">{{event.title}}</h4>
+              <p class="card-text text text-muted"> {{event.sub_title}}</p>
+              <a class='btn btn-primary' *ngIf="!event.finished" href="{{event.link}}">바로가기</a>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-muted" *ngIf="event.finished; else ingEvent">
+          {{event.endDate | date: 'yyyy.MM.dd'}} 이벤트 종료 -
+          <a href="{{event.link}}">자세히</a>
+        </div>
+        <ng-template #ingEvent>
+            <div class="card-footer text-info">
+                진행중
+              </div>
+        </ng-template>
+        
+      </div>
+  </ng-container>
+  
+  
+
+
+
+</div><!-- /.container-->

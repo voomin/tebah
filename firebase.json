@@ -1,0 +1,44 @@
+{
+  "hosting": [
+    {
+      "target": "test",
+      "public": "dist/barotok-angular-app",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "main",
+      "public": "dist/barotok-angular-app",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "predeploy": [
+      "npm --prefix ./functions/ run lint",
+      "npm --prefix ./functions/ run build"
+    ],
+    "source": "functions"
+  },
+  "firestore": {
+    "rules": "/firestore.rules"
+  }
+}

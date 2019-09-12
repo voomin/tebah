@@ -1,0 +1,99 @@
+<!-- <ng-container *ngIf="!eventId">
+  <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div> 
+</ng-container> -->
+
+
+    <!-- <header>
+        <div class="overlay"></div>
+        <img src='{{event.imgSrc}}'/>
+        <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+          <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4">
+        </video>
+        <div class="container h-100">
+          <div class="d-flex h-100 text-center align-items-center">
+            <div class="w-100 text-white">
+              <h1 class="display-3">EVENT</h1>
+              <p class="lead mb-0">{{event.startDate.seconds * 1000 | dateAgo}}에 시작</p>
+            </div>
+          </div>
+        </div>
+      </header> -->
+      
+      <section class="my-5">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-8 mx-auto">
+                <ng-container *ngIf="event | async as event else loading">
+                <!-- <p>
+                  <code>{{event.startDate.seconds * 1000 | date:'yyyy-MM-dd' }}({{event.startDate.seconds * 1000 | dateAgo}})</code>
+                  부터 
+                  <code>{{event.endDate.seconds * 1000 | date:'yyyy-MM-dd' }}</code>
+                  까지
+                </p>
+              <h4>
+                {{event.title}}
+              </h4>
+              <hr>
+              <p innerHTML='{{event.content}}'></p>
+              <hr>
+              <p class="mb-0 text-small">
+                by (주)테바
+              </p> -->
+                <div innerHTML='{{event.content}}'></div>
+              </ng-container>
+              <ng-template #loading>
+                  <div class="spinner-border text-primary" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div> 
+              </ng-template>
+              
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="container">
+        <div class="row col-md-8 mx-auto">
+          <!-- card start -->
+          <div class="card my-5 w-100">
+              <h5 class="card-header">댓글 남기기:</h5>
+              <div class="card-body">
+                
+                <form [formGroup]="registerForm" (ngSubmit)="onCommentSubmit(user.uid,user.displayName)" *ngIf="auth.user$ | async as user; else guest">
+                  <!-- <div class="form-group">
+                    <textarea class="form-control" rows="3"></textarea>
+                  </div> -->
+                  <div class="form-group">
+                      <textarea type="text" rows='3' formControlName="comment" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.comment.errors }">
+                      </textarea>
+                      <div *ngIf="submitted && f.comment.errors" class="invalid-feedback">
+                          <div *ngIf="f.comment.errors.required">댓글을 입력해주세요.</div>
+                      </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">댓글</button>
+                </form>
+                <ng-template #guest>
+                  <p class="text-secondary">회원만 댓글을 입력할 수 있습니다.</p>
+                </ng-template>
+                
+
+              </div>
+            </div>
+            <!-- card end -->
+            <ng-container *ngFor="let comment of comments | async comment">
+                <div class="media mb-4 w-100">
+                    <!-- <img class="mr-3 rounded-circle" src="http://placehold.it/50x50" alt="Generic placeholder image"> -->
+                    <div class="media-body">
+                        <h5 class="mt-0">작성자 : {{comment.from_displayName}}</h5>
+                        {{comment.content}}
+                        <p class='text-info'>
+                          <small>{{comment.timestamp | dateAgo}} ({{ comment.timestamp | date: 'yyyy-MM-dd'}})</small>
+                        </p>
+                    </div>
+                  </div>
+            </ng-container>
+
+        </div>
+      
+      </div>

@@ -1,0 +1,201 @@
+<ng-container *ngIf="auth.user$ | async as user; else notLogin">
+  <ng-container *ngIf="user.admin; else guest">
+    <div class="container-fluid">
+        <div class='row'>
+            <app-sidebar-admin></app-sidebar-admin>
+            <div class="col col-lg-9 m-3">
+              <!-- [ admin content ng container START ] -->
+                  <div class="container text-center">
+                      <div class="row justify-content-center">
+                        <div class="col-md-7">
+                          <h1 class="font-weight-light mt-4">포인트 관리</h1>
+                        </div>
+                      </div>
+                    </div>
+                    <hr>
+                    
+                    <div class="row">
+                      <div class='col-lg-7 mb-4'>
+                          <div class="card h-100">
+                              <h4 class="card-header">발행포인트</h4>
+                              <div class="card-body">
+                                <div class="display-4 text-right">
+                                  {{ (deployPoint | async)?.point | number}}P
+                                </div>
+                              </div>
+                              <div class="card-footer">
+                                <button class="btn btn-dark mr-2" data-toggle="modal" data-target="#deployPointInsertModal" style="cursor: pointer;">발행하기</button>
+                                <button class="btn btn-secondary" data-toggle="modal" data-target="#deployPointSelectModal" style="cursor: pointer;">조회</button>
+                              </div>
+                            </div>
+                      </div>
+                      <div class='col-lg-5 mb-4'>
+                          <div class="card h-100">
+                              <h4 class="card-header">ROOT 지갑</h4>
+                              <div class="card-body text-right">
+                                <div class="display-4">
+                                  {{ (rootWallet | async)?.point | number }}P
+                                </div>
+                                <!-- <div class='font-italic text-secondary'>현재 보유하고 있는 금액</div> -->
+                              </div>
+                              <div class="card-footer">
+                                  <button class="btn btn-dark mr-2" data-toggle="modal" data-target="#sendPointModal" style="cursor: pointer;">보내기</button>
+                                  <button class="btn btn-secondary" data-toggle="modal" data-target="#pointTransactionSelectModal" style="cursor: pointer;">조회</button>
+                              </div>
+                            </div>
+                      </div>
+                    </div>
+                    
+                    <!-- [ Modal deployPointInsertModal START ] -->
+                    <div class="modal" id="deployPointInsertModal">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h4 class="modal-title">포인트 발행하기</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          </div>
+                          <div class="modal-body">
+                              <p>발행할 최종 포인트 : </p>
+                              <div class="input-group mb-3">
+                                  <input #inputDeployPoint type="number" class="form-control text-right" placeholder="00">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">P</span>
+                                  </div>
+                                </div>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                              <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="onDeployPoint(inputDeployPoint.value)">발행</button>
+                          </div>
+                          
+                        </div>
+                      </div>
+                    </div>
+                    <!-- [ Modal deployPointInsertModal END ] -->
+
+                    <!-- [ Modal deployPointSelectModal START ] -->
+                    <div class="modal" id="deployPointSelectModal">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h4 class="modal-title">포인트 조회</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-borderless">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">발행일</th>
+                                        <th scope="col" class='text-right'>발행금액</th>
+                                        <th scope="col" class='text-right'>최종 발행 포인트</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr *ngFor="let dph of deployPointHistory | async">
+                                        <td>{{dph.timestamp | date : 'yyyy.MM.dd (HH:mm:ss)'}}</td>
+                                        <td class='text-right'>{{dph.change_point|number}} P</td>
+                                        <td class='text-right'>{{dph.after_total_point|number}}P</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                      <!-- [ Modal deployPointSelectModal END ] -->
+
+
+                      <!-- [ Modal sendPointModal START ] -->
+                    <div class="modal" id="sendPointModal">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h4 class="modal-title">포인트 보내기</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <p>보낼 상대 uid : </p>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="icon ion-person"></i></span>
+                                      </div>  
+                                    <input #inputToUID type="text" class="form-control" placeholder="uid">
+                                    </div>
+                                    
+                                <p>보낼 포인트 : </p>
+                                <div class="input-group mb-3">
+                                    <input #inputPointToSend type="number" class="form-control text-right" placeholder="00">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">P</span>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                              <button type="button" class="btn btn-primary" data-dismiss="modal" 
+                              (click)="onSendPoint(user.uid,inputToUID.value,inputPointToSend.value)">보내기</button>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                      <!-- [ Modal sendPointModal END ] -->
+                      
+                    <!-- [ Modal pointTransactionSelectModal START ] -->
+                    <div class="modal" id="pointTransactionSelectModal">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h4 class="modal-title">포인트 내역 조회</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                              <table class="table table-borderless">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col">날짜</th>
+                                      <th scope="col">보낸이</th>
+                                      <th scope="col">받는이</th>
+                                      <th scope="col" class='text-right'>포인트</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr *ngFor="let pt of pointTransactions | async">
+                                      <td>{{pt.timestamp | date : 'yyyy-MM-dd'}}</td>
+                                      <td>{{pt.from_displayName}}</td>
+                                      <td>{{pt.to_displayName}}</td>
+                                      <td class='text-right'>{{pt.point|number}} P</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                      <!-- [ Modal pointTransactionSelectModal  END ] -->
+
+              <!-- [ admin content ng container END ] -->
+            </div>
+        </div>
+    </div>
+  </ng-container>
+
+  <ng-template #guest>
+    <app-not-admin></app-not-admin>
+  </ng-template>
+
+</ng-container>
+
+<ng-template #notLogin>
+  <app-not-login></app-not-login>
+</ng-template>
+
+

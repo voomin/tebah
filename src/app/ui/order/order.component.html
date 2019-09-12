@@ -1,0 +1,382 @@
+<div class="container" *ngIf="(basket | async)?.length > 0; else emptyBasket">
+  <h4 class="mt-4 mb3">주문하기</h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/mall">제품 둘러보기</a>
+    </li>
+  </ol>
+  <!-- [ ROW START ] -->
+  <div class="row">
+    <!-- [ col 1 START] -->
+    <div class="col-lg-6 mb-3">
+      <div class="card">
+        <h5 class="card-header">받는사람 정보 입력</h5>
+        <div class="card-body">
+          <form [formGroup]="registerForm">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">이름</label>
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  formControlName="recieverName"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid': submitted && f.recieverName.errors
+                  }"
+                />
+                <div
+                  *ngIf="submitted && f.recieverName.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="f.recieverName.errors.required">
+                    물품을 수령받을 사람의 이름을 입력해주세요
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">전화번호</label>
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  formControlName="tel"
+                  class="form-control"
+                  [ngClass]="{ 'is-invalid': submitted && f.tel.errors }"
+                />
+                <div *ngIf="submitted && f.tel.errors" class="invalid-feedback">
+                  <div *ngIf="f.tel.errors.required">
+                    전화번호를 입력해주세요
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <!-- 배송지 주소 START -->
+          <div class="mb-3">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">배송 주소</label>
+              <div class="col-sm-9">
+                <button
+                  class="btn btn-light form-control"
+                  onclick="sample3_execDaumPostcode()"
+                  (click)="submitAddress = true"
+                  data-toggle="modal"
+                  data-target="#shippingAddressModal"
+                >
+                  찾기
+                </button>
+                <div class="text-secondary" [hidden]="!submitAddress">
+                  <small
+                    id="sample3_postcode"
+                    #sample3_postcode
+                    type="text"
+                    class="mt-2 font-italic"
+                  ></small
+                  ><br />
+                  <span
+                    id="sample3_extraAddress"
+                    #sample3_extraAddress
+                    type="text"
+                    class=""
+                  ></span>
+                  <span
+                    id="sample3_address"
+                    #sample3_address
+                    type="text"
+                    class=""
+                  ></span>
+                  <input
+                    id="sample3_detailAddress"
+                    type="text"
+                    class="form-control mt-1 mb-2"
+                    [(ngModel)]="inputShippingDeepAddress"
+                    placeholder="상세 주소"
+                  />
+                  <input
+                    id="sample3_message"
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="inputShippingMessege"
+                    placeholder="배송메세지"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 배송지 주소 END -->
+        </div>
+      </div>
+    </div>
+    <!-- [ col 1 END] -->
+
+    <!-- [ col 2 START] -->
+    <div class="col-lg-6 mb-3">
+      <div class="card">
+        <h5 class="card-header">주문 품목 리스트</h5>
+        <div class="card-body">
+          <ng-container *ngFor="let p of packagesinBasket; index as i">
+            <ul class="list-group">
+              <li class="list-group-item mb-3">
+                <p>
+                  {{ p.package_title }}
+                  <span
+                    class="badge badge-pill close"
+                    aria-label="Close"
+                    (click)="onDeltoBasket(p.id)"
+                    ><i class="icon ion-close-circled"></i
+                  ></span>
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span>{{ p.package_count }}개</span>
+                  <span *ngIf="!(userBasketData|async)?.pointPaymentPossible && p.package_point_availability" class="text-info small">포인트 사용가능</span>
+                  <span>{{ p.package_total_price | number }}원</span>
+                </div>
+              </li>
+            </ul>
+          </ng-container>
+          <div class="form-group row">
+            <label for="staticEmail" class="col-sm-5 col-form-label"
+              >주문금액</label
+            >
+            <div class="col-sm-7">
+              <input
+                type="text"
+                readonly
+                class="form-control-plaintext text-right"
+                value="{{ totalPrice | number }}원"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="staticEmail" class="col-sm-5 col-form-label"
+              >배송비</label
+            >
+            <div class="col-sm-7">
+              <input
+                type="text"
+                readonly
+                class="form-control-plaintext text-right"
+                value="{{ shippingPrice | number }}원"
+              />
+              <small class="form-text text-muted text-right"
+                >주문금액이 3만원 이상시 배송비 무료입니다</small
+              >
+            </div>
+          </div>
+          <hr />
+          <div class="form-group row">
+            <label
+              for="staticEmail"
+              class="col-sm-5 col-form-label font-weight-bold"
+              >결제금액</label
+            >
+            <div class="col-sm-7">
+              <input
+                type="text"
+                readonly
+                class="form-control-plaintext font-weight-bold text-right"
+                value="{{ totalPrice + shippingPrice | number }}원"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- [ col 2 END ] -->
+  </div>
+  <!-- [ ROW END ] -->
+
+  <div class="row">
+    <div class="col mb-3">
+      <div class="card">
+        <h5 class="card-header">주문자 동의</h5>
+        <div class="card-body">
+          <!-- <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">
+                        <input type="checkbox" aria-label="Checkbox for following text input">
+                      </div>
+                    </div>
+                    <button class="form-control btn btn-light" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        개인정보 수집·이용 및 제3자 정보 제공 동의
+                      </button>      
+                  </div> -->
+
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              [(ngModel)]="checkedBuyerAgreement"
+              id="defaultCheck1"
+            />
+            <label class="form-check-label small" for="defaultCheck1">
+              <a
+                data-toggle="collapse"
+                href="#collapseExample1"
+                role="button"
+                aria-expanded="false"
+                aria-controls="collapseExample1"
+              >
+                개인정보 수집·이용
+              </a>
+              및
+              <a
+                data-toggle="collapse"
+                href="#collapseExample2"
+                role="button"
+                aria-expanded="false"
+                aria-controls="collapseExample2"
+              >
+                제3자 정보 제공
+              </a>
+              에 동의합니다.
+            </label>
+          </div>
+          <div class="collapse" id="collapseExample1">
+            <div class="card card-body">
+              고객님께서 구매하신 서비스 및 상품의 원활한 제공을 위해 최소한의
+              범위 내에서 아래와 같이 개인정보를 수집·이용 합니다. 고객님께서는
+              정보 제공에 동의하지 않으실 수 있으며 동의하지 않으실 경우, 일부
+              구매가 제한될 수 있습니다.
+              <ul>
+                <li>
+                  수집이용·목적 : 상품 배송 및 서비스 제공을 위한 사용자
+                  정보확인, 주문자 본인확인
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="collapse" id="collapseExample2">
+            <div class="card card-body">
+              제공받는자 : 롯데택배<br />
+              목적 : 판매자와 구매자 간 원활한 거래의 진행(구매자확인, 해피콜
+              등), 고객상담 및 불만처리, 서비스 제공, 상품과 경품 배송(전송 및
+              설치 등 포함)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col mb-3">
+      <div class="card">
+        <h5 class="card-header">결제</h5>
+        <div class="card-body row">
+          <div class="card mr-3" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">테바 포인트</h5>
+              <h6 class="card-subtitle mb-2 text-muted small font-italic">
+                1P(테바포인트)는 1￦(원)과 같습니다
+              </h6>
+
+              <div class="input-group mb-3">
+                <div class="input-group-append">
+                  <span class="input-group-text"
+                    ><i class="icon ion-person"></i
+                  ></span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control bg-white text-right"
+                  value="{{ userHavePoint | number }}"
+                  placeholder="0"
+                  readonly
+                />
+                <div class="input-group-append">
+                  <span class="input-group-text">P</span>
+                </div>
+              </div>
+              <!-- <a href="#" class="card-link">Card link</a> -->
+              <button
+                *ngIf="(userBasketData|async)?.pointPaymentPossible else NotPPP"
+                (click)="
+                  onPayment('point', {
+                    postcode: sample3_postcode.innerText,
+                    shippingAddress: sample3_address.innerText,
+                    shippingSubAddress: sample3_extraAddress.innerText
+                  })
+                "
+                class="btn btn-primary"
+              >
+                포인트 결제
+              </button>
+              <ng-template #NotPPP>
+                장바구니에 포인트로 결제할 수 없는 상품이 담겨 있습니다.
+              </ng-template>
+            </div>
+          </div>
+          <!-- <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">현금결제</h5>
+              <p class="text-secondary">
+                현재 심사 준비중으로 정상적으로 사용할 수 없습니다.
+              </p>
+              <button
+                (click)="
+                  onPayment('card', {
+                    postcode: sample3_postcode.innerText,
+                    shippingAddress: sample3_address.innerText,
+                    shippingSubAddress: sample3_extraAddress.innerText
+                  })
+                "
+                class="btn btn-primary w-100"
+              >
+                결제
+              </button>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #emptyBasket>
+  <div id="page-content">
+    <div class="container text-center">
+      <div class="row justify-content-center">
+        <div class="col-md-7 my-3">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <h1 class="font-weight-light mt-4">장바구니에 아무것도 없네요,,</h1>
+          <p class="lead text-secondary">
+            <a routerLink="/mall">테바몰</a>에서 물품을 장바구니에 담아주세요
+            <br />
+            <a routerLink="/mall">테바몰</a>
+            이동
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- [ Modal shippingAddressModal START ] -->
+<div class="modal" id="shippingAddressModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">주소 찾기</h4>
+        <button type="button" class="close" data-dismiss="modal">
+          &times;
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- <div id="shippingAddressLayer" style="display:none;position:fixed;overflow:hidden;z-index:1;-webkit-overflow-scrolling:touch;"> -->
+        <!-- <div id="shippingAddressLayer" style="-webkit-overflow-scrolling:touch;"></div> -->
+        <div
+          id="shippingAddressLayer"
+          style="width:100%; height:300px; position:relative"
+        ></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          닫기
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- [ Modal shippingAddressModal END ] -->
