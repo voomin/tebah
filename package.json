@@ -22,7 +22,7 @@
     "@ng-bootstrap/ng-bootstrap": "^4.2.1",
     "@types/xlsx": "0.0.36",
     "angularfire2": "^5.1.2",
-    "chart.js": "^2.8.0",
+    "chart.js": "^2.9.4",
     "core-js": "^2.5.4",
     "firebase": "^5.9.1",
     "ng2-charts": "^2.2.2",
